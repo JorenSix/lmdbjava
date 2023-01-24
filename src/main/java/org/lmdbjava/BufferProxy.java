@@ -40,7 +40,7 @@ public abstract class BufferProxy<T> {
   /**
    * Size of a <code>MDB_val</code> pointer in bytes.
    */
-  protected static final int MDB_VAL_STRUCT_SIZE = BYTES * 2;
+  public static final int MDB_VAL_STRUCT_SIZE = BYTES * 2;
 
   /**
    * Offset from a pointer of the <code>MDB_val.mv_data</code> field.
@@ -58,7 +58,7 @@ public abstract class BufferProxy<T> {
    *
    * @return a buffer for passing to the <code>out</code> method
    */
-  protected abstract T allocate();
+  public abstract T allocate();
 
   /**
    * Compare the two buffers.
@@ -71,14 +71,14 @@ public abstract class BufferProxy<T> {
    * @param o2 right operand
    * @return as per {@link Comparable}
    */
-  protected abstract int compare(T o1, T o2);
+  public abstract int compare(T o1, T o2);
 
   /**
    * Deallocate a buffer that was previously provided by {@link #allocate()}.
    *
    * @param buff the buffer to deallocate (required)
    */
-  protected abstract void deallocate(T buff);
+  public abstract void deallocate(T buff);
 
   /**
    * Obtain a copy of the bytes contained within the passed buffer.
@@ -97,7 +97,7 @@ public abstract class BufferProxy<T> {
    * @param ptr     the pointer to the <code>MDB_val</code>
    * @param ptrAddr the address of the <code>MDB_val</code> pointer
    */
-  protected abstract void in(T buffer, Pointer ptr, long ptrAddr);
+  public abstract void in(T buffer, Pointer ptr, long ptrAddr);
 
   /**
    * Called when the <code>MDB_val</code> should be set to reflect the passed
@@ -119,7 +119,7 @@ public abstract class BufferProxy<T> {
    * @param ptrAddr the address of the <code>MDB_val</code> pointer
    * @return the buffer for <code>MDB_val</code>
    */
-  protected abstract T out(T buffer, Pointer ptr, long ptrAddr);
+  public abstract T out(T buffer, Pointer ptr, long ptrAddr);
 
   /**
    * Create a new {@link KeyVal} to hold pointers for this buffer proxy.

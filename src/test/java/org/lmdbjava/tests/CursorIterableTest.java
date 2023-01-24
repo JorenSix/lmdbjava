@@ -18,9 +18,8 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
-import static com.jakewharton.byteunits.BinaryByteUnit.KIBIBYTES;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -47,9 +46,6 @@ import static org.lmdbjava.KeyRange.openBackward;
 import static org.lmdbjava.KeyRange.openClosed;
 import static org.lmdbjava.KeyRange.openClosedBackward;
 import static org.lmdbjava.PutFlags.MDB_NOOVERWRITE;
-import static org.lmdbjava.TestUtils.DB_1;
-import static org.lmdbjava.TestUtils.POSIX_MODE;
-import static org.lmdbjava.TestUtils.bb;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,6 +64,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.lmdbjava.*;
 import org.lmdbjava.CursorIterable.KeyVal;
 
 /**
@@ -98,88 +95,88 @@ public final class CursorIterableTest {
 
   @Test
   public void atLeastBackwardTest() {
-    verify(atLeastBackward(bb(5)), 4, 2);
-    verify(atLeastBackward(bb(6)), 6, 4, 2);
-    verify(atLeastBackward(bb(9)), 8, 6, 4, 2);
+    verify(atLeastBackward(TestUtils.bb(5)), 4, 2);
+    verify(atLeastBackward(TestUtils.bb(6)), 6, 4, 2);
+    verify(atLeastBackward(TestUtils.bb(9)), 8, 6, 4, 2);
   }
 
   @Test
   public void atLeastTest() {
-    verify(atLeast(bb(5)), 6, 8);
-    verify(atLeast(bb(6)), 6, 8);
+    verify(atLeast(TestUtils.bb(5)), 6, 8);
+    verify(atLeast(TestUtils.bb(6)), 6, 8);
   }
 
   @Test
   public void atMostBackwardTest() {
-    verify(atMostBackward(bb(5)), 8, 6);
-    verify(atMostBackward(bb(6)), 8, 6);
+    verify(atMostBackward(TestUtils.bb(5)), 8, 6);
+    verify(atMostBackward(TestUtils.bb(6)), 8, 6);
   }
 
   @Test
   public void atMostTest() {
-    verify(atMost(bb(5)), 2, 4);
-    verify(atMost(bb(6)), 2, 4, 6);
+    verify(atMost(TestUtils.bb(5)), 2, 4);
+    verify(atMost(TestUtils.bb(6)), 2, 4, 6);
   }
 
   @Before
   public void before() throws IOException {
     final File path = tmp.newFile();
     env = create()
-        .setMapSize(KIBIBYTES.toBytes(100))
+        .setMapSize(400 * 1024)
         .setMaxReaders(1)
         .setMaxDbs(1)
-        .open(path, POSIX_MODE, MDB_NOSUBDIR);
-    db = env.openDbi(DB_1, MDB_CREATE);
+        .open(path, TestUtils.POSIX_MODE, MDB_NOSUBDIR);
+    db = env.openDbi(TestUtils.DB_1, MDB_CREATE);
     list = new LinkedList<>();
     list.addAll(asList(2, 3, 4, 5, 6, 7, 8, 9));
     try (Txn<ByteBuffer> txn = env.txnWrite()) {
       final Cursor<ByteBuffer> c = db.openCursor(txn);
-      c.put(bb(2), bb(3), MDB_NOOVERWRITE);
-      c.put(bb(4), bb(5));
-      c.put(bb(6), bb(7));
-      c.put(bb(8), bb(9));
+      c.put(TestUtils.bb(2), TestUtils.bb(3), MDB_NOOVERWRITE);
+      c.put(TestUtils.bb(4), TestUtils.bb(5));
+      c.put(TestUtils.bb(6), TestUtils.bb(7));
+      c.put(TestUtils.bb(8), TestUtils.bb(9));
       txn.commit();
     }
   }
 
   @Test
   public void closedBackwardTest() {
-    verify(closedBackward(bb(7), bb(3)), 6, 4);
-    verify(closedBackward(bb(6), bb(2)), 6, 4, 2);
-    verify(closedBackward(bb(9), bb(3)), 8, 6, 4);
+    verify(closedBackward(TestUtils.bb(7), TestUtils.bb(3)), 6, 4);
+    verify(closedBackward(TestUtils.bb(6), TestUtils.bb(2)), 6, 4, 2);
+    verify(closedBackward(TestUtils.bb(9), TestUtils.bb(3)), 8, 6, 4);
   }
 
   @Test
   public void closedOpenBackwardTest() {
-    verify(closedOpenBackward(bb(8), bb(3)), 8, 6, 4);
-    verify(closedOpenBackward(bb(7), bb(2)), 6, 4);
-    verify(closedOpenBackward(bb(9), bb(3)), 8, 6, 4);
+    verify(closedOpenBackward(TestUtils.bb(8), TestUtils.bb(3)), 8, 6, 4);
+    verify(closedOpenBackward(TestUtils.bb(7), TestUtils.bb(2)), 6, 4);
+    verify(closedOpenBackward(TestUtils.bb(9), TestUtils.bb(3)), 8, 6, 4);
   }
 
   @Test
   public void closedOpenTest() {
-    verify(closedOpen(bb(3), bb(8)), 4, 6);
-    verify(closedOpen(bb(2), bb(6)), 2, 4);
+    verify(closedOpen(TestUtils.bb(3), TestUtils.bb(8)), 4, 6);
+    verify(closedOpen(TestUtils.bb(2), TestUtils.bb(6)), 2, 4);
   }
 
   @Test
   public void closedTest() {
-    verify(closed(bb(3), bb(7)), 4, 6);
-    verify(closed(bb(2), bb(6)), 2, 4, 6);
-    verify(closed(bb(1), bb(7)), 2, 4, 6);
+    verify(closed(TestUtils.bb(3), TestUtils.bb(7)), 4, 6);
+    verify(closed(TestUtils.bb(2), TestUtils.bb(6)), 2, 4, 6);
+    verify(closed(TestUtils.bb(1), TestUtils.bb(7)), 2, 4, 6);
   }
 
   @Test
   public void greaterThanBackwardTest() {
-    verify(greaterThanBackward(bb(6)), 4, 2);
-    verify(greaterThanBackward(bb(7)), 6, 4, 2);
-    verify(greaterThanBackward(bb(9)), 8, 6, 4, 2);
+    verify(greaterThanBackward(TestUtils.bb(6)), 4, 2);
+    verify(greaterThanBackward(TestUtils.bb(7)), 6, 4, 2);
+    verify(greaterThanBackward(TestUtils.bb(9)), 8, 6, 4, 2);
   }
 
   @Test
   public void greaterThanTest() {
-    verify(greaterThan(bb(4)), 6, 8);
-    verify(greaterThan(bb(3)), 4, 6, 8);
+    verify(greaterThan(TestUtils.bb(4)), 6, 8);
+    verify(greaterThan(TestUtils.bb(3)), 4, 6, 8);
   }
 
   @Test(expected = IllegalStateException.class)
@@ -213,14 +210,14 @@ public final class CursorIterableTest {
 
   @Test
   public void lessThanBackwardTest() {
-    verify(lessThanBackward(bb(5)), 8, 6);
-    verify(lessThanBackward(bb(2)), 8, 6, 4);
+    verify(lessThanBackward(TestUtils.bb(5)), 8, 6);
+    verify(lessThanBackward(TestUtils.bb(2)), 8, 6, 4);
   }
 
   @Test
   public void lessThanTest() {
-    verify(lessThan(bb(5)), 2, 4);
-    verify(lessThan(bb(8)), 2, 4, 6);
+    verify(lessThan(TestUtils.bb(5)), 2, 4);
+    verify(lessThan(TestUtils.bb(8)), 2, 4, 6);
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -240,16 +237,16 @@ public final class CursorIterableTest {
 
   @Test
   public void openBackwardTest() {
-    verify(openBackward(bb(7), bb(2)), 6, 4);
-    verify(openBackward(bb(8), bb(1)), 6, 4, 2);
-    verify(openBackward(bb(9), bb(4)), 8, 6);
+    verify(openBackward(TestUtils.bb(7), TestUtils.bb(2)), 6, 4);
+    verify(openBackward(TestUtils.bb(8), TestUtils.bb(1)), 6, 4, 2);
+    verify(openBackward(TestUtils.bb(9), TestUtils.bb(4)), 8, 6);
   }
 
   @Test
   public void openClosedBackwardTest() {
-    verify(openClosedBackward(bb(7), bb(2)), 6, 4, 2);
-    verify(openClosedBackward(bb(8), bb(4)), 6, 4);
-    verify(openClosedBackward(bb(9), bb(4)), 8, 6, 4);
+    verify(openClosedBackward(TestUtils.bb(7), TestUtils.bb(2)), 6, 4, 2);
+    verify(openClosedBackward(TestUtils.bb(8), TestUtils.bb(4)), 6, 4);
+    verify(openClosedBackward(TestUtils.bb(9), TestUtils.bb(4)), 8, 6, 4);
   }
 
   @Test
@@ -266,20 +263,20 @@ public final class CursorIterableTest {
       bb2.reset();
       return guava.compare(array1, array2);
     };
-    verify(openClosedBackward(bb(7), bb(2)), comparator, 6, 4, 2);
-    verify(openClosedBackward(bb(8), bb(4)), comparator, 6, 4);
+    verify(openClosedBackward(TestUtils.bb(7), TestUtils.bb(2)), comparator, 6, 4, 2);
+    verify(openClosedBackward(TestUtils.bb(8), TestUtils.bb(4)), comparator, 6, 4);
   }
 
   @Test
   public void openClosedTest() {
-    verify(openClosed(bb(3), bb(8)), 4, 6, 8);
-    verify(openClosed(bb(2), bb(6)), 4, 6);
+    verify(openClosed(TestUtils.bb(3), TestUtils.bb(8)), 4, 6, 8);
+    verify(openClosed(TestUtils.bb(2), TestUtils.bb(6)), 4, 6);
   }
 
   @Test
   public void openTest() {
-    verify(open(bb(3), bb(7)), 4, 6);
-    verify(open(bb(2), bb(8)), 4, 6);
+    verify(open(TestUtils.bb(3), TestUtils.bb(7)), 4, 6);
+    verify(open(TestUtils.bb(2), TestUtils.bb(8)), 4, 6);
   }
 
   @Test

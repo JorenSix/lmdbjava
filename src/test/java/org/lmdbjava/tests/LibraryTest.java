@@ -18,16 +18,17 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static java.lang.Long.BYTES;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.lmdbjava.Library.RUNTIME;
-import static org.lmdbjava.TestUtils.invokePrivateConstructor;
 
 import org.junit.Test;
+import org.lmdbjava.Library;
 import org.lmdbjava.Library.MDB_envinfo;
+import org.lmdbjava.UnsafeAccess;
 
 /**
  * Test {@link Library}.
@@ -36,8 +37,8 @@ public final class LibraryTest {
 
   @Test
   public void coverPrivateConstructors() {
-    invokePrivateConstructor(Library.class);
-    invokePrivateConstructor(UnsafeAccess.class);
+    TestUtils.invokePrivateConstructor(Library.class);
+    TestUtils.invokePrivateConstructor(UnsafeAccess.class);
   }
 
   @Test

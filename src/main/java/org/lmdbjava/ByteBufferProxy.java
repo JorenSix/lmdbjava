@@ -102,7 +102,7 @@ public final class ByteBufferProxy {
    * Provides {@link ByteBuffer} pooling and address resolution for concrete
    * {@link BufferProxy} implementations.
    */
-  abstract static class AbstractByteBufferProxy extends BufferProxy<ByteBuffer> {
+  public abstract static class AbstractByteBufferProxy extends BufferProxy<ByteBuffer> {
 
     protected static final String FIELD_NAME_ADDRESS = "address";
     protected static final String FIELD_NAME_CAPACITY = "capacity";
@@ -155,7 +155,7 @@ public final class ByteBufferProxy {
       return o1.remaining() - o2.remaining();
     }
 
-    static Field findField(final Class<?> c, final String name) {
+    public static Field findField(final Class<?> c, final String name) {
       Class<?> clazz = c;
       do {
         try {
@@ -169,15 +169,36 @@ public final class ByteBufferProxy {
       throw new LmdbException(name + " not found");
     }
 
+    static final Field address;
+    static {
+      try {
+        address = Buffer.class.getDeclaredField("address");
+        address.setAccessible(true);
+      } catch (NoSuchFieldException e) {
+        throw new AssertionError(e);
+      }
+    }
+
+
     protected final long address(final ByteBuffer buffer) {
       if (SHOULD_CHECK && !buffer.isDirect()) {
         throw new BufferMustBeDirectException();
       }
-      return ((sun.nio.ch.DirectBuffer) buffer).address() + buffer.position();
+
+      long addr = 0;
+      try {
+        addr = address.getLong(buffer);
+        System.out.println("Found address " + addr);
+      } catch (IllegalAccessException e) {
+        System.out.println("DId not find address");
+        throw new RuntimeException(e);
+      }
+      //return ((sun.nio.ch.DirectBuffer) buffer).address() + buffer.position();
+      return addr + buffer.position();
     }
 
     @Override
-    protected final ByteBuffer allocate() {
+    public final ByteBuffer allocate() {
       final ArrayDeque<ByteBuffer> queue = BUFFERS.get();
       final ByteBuffer buffer = queue.poll();
 
@@ -189,12 +210,12 @@ public final class ByteBufferProxy {
     }
 
     @Override
-    protected final int compare(final ByteBuffer o1, final ByteBuffer o2) {
+    public final int compare(final ByteBuffer o1, final ByteBuffer o2) {
       return compareBuff(o1, o2);
     }
 
     @Override
-    protected final void deallocate(final ByteBuffer buff) {
+    public final void deallocate(final ByteBuffer buff) {
       buff.order(BIG_ENDIAN);
       final ArrayDeque<ByteBuffer> queue = BUFFERS.get();
       queue.offer(buff);
@@ -224,8 +245,8 @@ public final class ByteBufferProxy {
     }
 
     @Override
-    protected void in(final ByteBuffer buffer, final Pointer ptr,
-                      final long ptrAddr) {
+    public void in(final ByteBuffer buffer, final Pointer ptr,
+                   final long ptrAddr) {
       ptr.putAddress(STRUCT_FIELD_OFFSET_DATA, address(buffer));
       ptr.putLong(STRUCT_FIELD_OFFSET_SIZE, buffer.remaining());
     }
@@ -238,8 +259,8 @@ public final class ByteBufferProxy {
     }
 
     @Override
-    protected ByteBuffer out(final ByteBuffer buffer, final Pointer ptr,
-                             final long ptrAddr) {
+    public ByteBuffer out(final ByteBuffer buffer, final Pointer ptr,
+                          final long ptrAddr) {
       final long addr = ptr.getAddress(STRUCT_FIELD_OFFSET_DATA);
       final long size = ptr.getLong(STRUCT_FIELD_OFFSET_SIZE);
       try {
@@ -275,8 +296,8 @@ public final class ByteBufferProxy {
     }
 
     @Override
-    protected void in(final ByteBuffer buffer, final Pointer ptr,
-                      final long ptrAddr) {
+    public void in(final ByteBuffer buffer, final Pointer ptr,
+                   final long ptrAddr) {
       UNSAFE.putLong(ptrAddr + STRUCT_FIELD_OFFSET_SIZE, buffer.remaining());
       UNSAFE.putLong(ptrAddr + STRUCT_FIELD_OFFSET_DATA, address(buffer));
     }
@@ -289,8 +310,8 @@ public final class ByteBufferProxy {
     }
 
     @Override
-    protected ByteBuffer out(final ByteBuffer buffer, final Pointer ptr,
-                             final long ptrAddr) {
+    public ByteBuffer out(final ByteBuffer buffer, final Pointer ptr,
+                          final long ptrAddr) {
       final long addr = UNSAFE.getLong(ptrAddr + STRUCT_FIELD_OFFSET_DATA);
       final long size = UNSAFE.getLong(ptrAddr + STRUCT_FIELD_OFFSET_SIZE);
       UNSAFE.putLong(buffer, ADDRESS_OFFSET, addr);

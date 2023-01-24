@@ -18,9 +18,8 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
-import static com.jakewharton.byteunits.BinaryByteUnit.MEBIBYTES;
 import static java.nio.ByteBuffer.allocateDirect;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,8 +33,6 @@ import static org.lmdbjava.Env.create;
 import static org.lmdbjava.Env.open;
 import static org.lmdbjava.EnvFlags.MDB_NOSUBDIR;
 import static org.lmdbjava.EnvFlags.MDB_RDONLY_ENV;
-import static org.lmdbjava.TestUtils.DB_1;
-import static org.lmdbjava.TestUtils.bb;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +43,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.lmdbjava.*;
 import org.lmdbjava.Env.AlreadyClosedException;
 import org.lmdbjava.Env.AlreadyOpenException;
 import org.lmdbjava.Env.Builder;
@@ -66,10 +64,10 @@ public final class EnvTest {
     final File path = tmp.newFile();
     try (Env<ByteBuffer> env = create()
         .setMaxReaders(1)
-        .setMapSize(MEBIBYTES.toBytes(1))
+        .setMapSize(1 * 1024 * 1024)
         .open(path, MDB_NOSUBDIR)) {
       final EnvInfo info = env.info();
-      assertThat(info.mapSize, is(MEBIBYTES.toBytes(1)));
+      assertThat(info.mapSize, is(1l * 1024 * 1024));
     }
   }
 
@@ -296,9 +294,9 @@ public final class EnvTest {
     final Random rnd = new Random();
     try (Env<ByteBuffer> env = create()
         .setMaxReaders(1)
-        .setMapSize(MEBIBYTES.toBytes(8))
+        .setMapSize(8 * 1024 * 1024)
         .setMaxDbs(1).open(path)) {
-      final Dbi<ByteBuffer> db = env.openDbi(DB_1, MDB_CREATE);
+      final Dbi<ByteBuffer> db = env.openDbi(TestUtils.DB_1, MDB_CREATE);
       for (;;) {
         rnd.nextBytes(k);
         key.clear();
@@ -315,15 +313,15 @@ public final class EnvTest {
     try (Env<ByteBuffer> rwEnv = create()
         .setMaxReaders(1)
         .open(path)) {
-      final Dbi<ByteBuffer> rwDb = rwEnv.openDbi(DB_1, MDB_CREATE);
-      rwDb.put(bb(1), bb(42));
+      final Dbi<ByteBuffer> rwDb = rwEnv.openDbi(TestUtils.DB_1, MDB_CREATE);
+      rwDb.put(TestUtils.bb(1), TestUtils.bb(42));
     }
     try (Env<ByteBuffer> roEnv = create()
         .setMaxReaders(1)
         .open(path, MDB_RDONLY_ENV)) {
-      final Dbi<ByteBuffer> roDb = roEnv.openDbi(DB_1);
+      final Dbi<ByteBuffer> roDb = roEnv.openDbi(TestUtils.DB_1);
       try (Txn<ByteBuffer> roTxn = roEnv.txnRead()) {
-        assertThat(roDb.get(roTxn, bb(1)), notNullValue());
+        assertThat(roDb.get(roTxn, TestUtils.bb(1)), notNullValue());
       }
     }
   }
@@ -338,12 +336,12 @@ public final class EnvTest {
     final Random rnd = new Random();
     try (Env<ByteBuffer> env = create()
         .setMaxReaders(1)
-        .setMapSize(50_000)
+        .setMapSize(150_000)
         .setMaxDbs(1)
         .open(path)) {
-      final Dbi<ByteBuffer> db = env.openDbi(DB_1, MDB_CREATE);
+      final Dbi<ByteBuffer> db = env.openDbi(TestUtils.DB_1, MDB_CREATE);
 
-      db.put(bb(1), bb(42));
+      db.put(TestUtils.bb(1), TestUtils.bb(42));
       boolean mapFullExThrown = false;
       try {
         for (int i = 0; i < 30; i++) {
@@ -361,7 +359,7 @@ public final class EnvTest {
       env.setMapSize(500_000);
 
       try (Txn<ByteBuffer> roTxn = env.txnRead()) {
-        assertThat(db.get(roTxn, bb(1)).getInt(), is(42));
+        assertThat(db.get(roTxn, TestUtils.bb(1)).getInt(), is(42));
       }
 
       mapFullExThrown = false;
@@ -393,7 +391,7 @@ public final class EnvTest {
       assertThat(stat.entries, is(0L));
       assertThat(stat.leafPages, is(0L));
       assertThat(stat.overflowPages, is(0L));
-      assertThat(stat.pageSize, is(4_096));
+      assertThat(stat.pageSize, is(4_096 * 4));
       assertThat(stat.toString(), containsString("pageSize="));
     }
   }

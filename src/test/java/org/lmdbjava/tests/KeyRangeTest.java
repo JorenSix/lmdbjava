@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -48,6 +48,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lmdbjava.KeyRange;
+import org.lmdbjava.KeyRangeType;
 import org.lmdbjava.KeyRangeType.CursorOp;
 import org.lmdbjava.KeyRangeType.IteratorOp;
 

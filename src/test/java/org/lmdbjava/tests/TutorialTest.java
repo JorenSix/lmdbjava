@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -51,6 +51,7 @@ import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.lmdbjava.*;
 import org.lmdbjava.CursorIterable.KeyVal;
 
 /**

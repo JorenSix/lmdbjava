@@ -29,7 +29,7 @@ import sun.misc.Unsafe;
 /**
  * Provides access to Unsafe.
  */
-final class UnsafeAccess {
+public final class UnsafeAccess {
 
   /**
    * Java system property name that can be set to disable unsafe.

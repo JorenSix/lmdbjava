@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static io.netty.buffer.PooledByteBufAllocator.DEFAULT;
 import static java.lang.Integer.BYTES;
@@ -31,6 +31,7 @@ import java.nio.ByteBuffer;
 import io.netty.buffer.ByteBuf;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
+import org.lmdbjava.LmdbException;
 
 /**
  * Static constants and methods that are convenient when writing LMDB-related

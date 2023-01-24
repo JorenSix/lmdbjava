@@ -71,10 +71,10 @@ public class LmdbNativeException extends LmdbException {
    */
   public static final class PageCorruptedException extends LmdbNativeException {
 
-    static final int MDB_CORRUPTED = -30_796;
+    public static final int MDB_CORRUPTED = -30_796;
     private static final long serialVersionUID = 1L;
 
-    PageCorruptedException() {
+    public PageCorruptedException() {
       super(MDB_CORRUPTED, "located page was wrong type");
     }
   }
@@ -87,7 +87,7 @@ public class LmdbNativeException extends LmdbException {
     static final int MDB_PAGE_FULL = -30_786;
     private static final long serialVersionUID = 1L;
 
-    PageFullException() {
+    public PageFullException() {
       super(MDB_PAGE_FULL, "Page has not enough space - internal error");
     }
   }
@@ -100,7 +100,7 @@ public class LmdbNativeException extends LmdbException {
     static final int MDB_PAGE_NOTFOUND = -30_797;
     private static final long serialVersionUID = 1L;
 
-    PageNotFoundException() {
+    public PageNotFoundException() {
       super(MDB_PAGE_NOTFOUND,
             "Requested page not found - this usually indicates corruption");
     }
@@ -114,7 +114,7 @@ public class LmdbNativeException extends LmdbException {
     static final int MDB_PANIC = -30_795;
     private static final long serialVersionUID = 1L;
 
-    PanicException() {
+    public PanicException() {
       super(MDB_PANIC,
             "Update of meta page failed or environment had fatal error");
     }
@@ -128,7 +128,7 @@ public class LmdbNativeException extends LmdbException {
     static final int MDB_TLS_FULL = -30_789;
     private static final long serialVersionUID = 1L;
 
-    TlsFullException() {
+    public TlsFullException() {
       super(MDB_TLS_FULL, "Too many TLS keys in use - Windows only");
     }
   }

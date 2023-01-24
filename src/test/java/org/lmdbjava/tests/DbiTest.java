@@ -18,9 +18,9 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
-import static com.jakewharton.byteunits.BinaryByteUnit.MEBIBYTES;
+
 import static java.lang.Long.MAX_VALUE;
 import static java.lang.System.getProperty;
 import static java.nio.ByteBuffer.allocateDirect;
@@ -50,9 +50,9 @@ import static org.lmdbjava.GetOp.MDB_SET_KEY;
 import static org.lmdbjava.KeyRange.atMost;
 import static org.lmdbjava.PutFlags.MDB_NODUPDATA;
 import static org.lmdbjava.PutFlags.MDB_NOOVERWRITE;
-import static org.lmdbjava.TestUtils.DB_1;
-import static org.lmdbjava.TestUtils.ba;
-import static org.lmdbjava.TestUtils.bb;
+import static org.lmdbjava.tests.TestUtils.DB_1;
+import static org.lmdbjava.tests.TestUtils.ba;
+import static org.lmdbjava.tests.TestUtils.bb;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,6 +75,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.lmdbjava.*;
 import org.lmdbjava.CursorIterable.KeyVal;
 import org.lmdbjava.Dbi.DbFullException;
 import org.lmdbjava.Env.MapFullException;
@@ -98,7 +99,7 @@ public final class DbiTest {
   public void before() throws IOException {
     final File path = tmp.newFile();
     env = create()
-        .setMapSize(MEBIBYTES.toBytes(64))
+        .setMapSize(64 * 1_024 * 1_024)
         .setMaxReaders(2)
         .setMaxDbs(2)
         .open(path, MDB_NOSUBDIR);
@@ -329,7 +330,7 @@ public final class DbiTest {
   public void putCommitGetByteArray() throws IOException {
     final File path = tmp.newFile();
     try (Env<byte[]> envBa = create(PROXY_BA)
-        .setMapSize(MEBIBYTES.toBytes(64))
+        .setMapSize(64 * 1_024 * 1_024)
         .setMaxReaders(1)
         .setMaxDbs(2)
         .open(path, MDB_NOSUBDIR)) {
@@ -456,7 +457,7 @@ public final class DbiTest {
     assertThat(stat.entries, is(3L));
     assertThat(stat.leafPages, is(1L));
     assertThat(stat.overflowPages, is(0L));
-    assertThat(stat.pageSize, is(4_096));
+    assertThat(stat.pageSize, is(4_096*4));
   }
 
   @Test(expected = MapFullException.class)

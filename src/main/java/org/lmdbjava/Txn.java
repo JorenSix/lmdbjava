@@ -186,19 +186,19 @@ public final class Txn<T> implements AutoCloseable {
     return keyVal.val();
   }
 
-  void checkReadOnly() {
+  public void checkReadOnly() {
     if (!readOnly) {
       throw new ReadOnlyRequiredException();
     }
   }
 
-  void checkReady() {
+  public void checkReady() {
     if (state != READY) {
       throw new NotReadyException();
     }
   }
 
-  void checkWritesAllowed() {
+  public void checkWritesAllowed() {
     if (readOnly) {
       throw new ReadWriteRequiredException();
     }
@@ -222,7 +222,7 @@ public final class Txn<T> implements AutoCloseable {
    *
    * @return the state
    */
-  State getState() {
+  public State getState() {
     return state;
   }
 
@@ -246,7 +246,7 @@ public final class Txn<T> implements AutoCloseable {
     static final int MDB_BAD_TXN = -30_782;
     private static final long serialVersionUID = 1L;
 
-    BadException() {
+    public BadException() {
       super(MDB_BAD_TXN, "Transaction must abort, has a child, or is invalid");
     }
   }
@@ -259,7 +259,7 @@ public final class Txn<T> implements AutoCloseable {
     static final int MDB_BAD_RSLOT = -30_783;
     private static final long serialVersionUID = 1L;
 
-    BadReaderLockException() {
+    public BadReaderLockException() {
       super(MDB_BAD_RSLOT, "Invalid reuse of reader locktable slot");
     }
   }
@@ -377,7 +377,7 @@ public final class Txn<T> implements AutoCloseable {
     static final int MDB_TXN_FULL = -30_788;
     private static final long serialVersionUID = 1L;
 
-    TxFullException() {
+    public TxFullException() {
       super(MDB_TXN_FULL, "Transaction has too many dirty pages");
     }
   }
@@ -385,7 +385,7 @@ public final class Txn<T> implements AutoCloseable {
   /**
    * Transaction states.
    */
-  enum State {
+  public enum State {
     READY, DONE, RESET, RELEASED
   }
 

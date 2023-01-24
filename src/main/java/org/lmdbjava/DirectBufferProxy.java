@@ -99,7 +99,7 @@ public final class DirectBufferProxy extends BufferProxy<DirectBuffer> {
   }
 
   @Override
-  protected DirectBuffer allocate() {
+  public DirectBuffer allocate() {
     final OneToOneConcurrentArrayQueue<DirectBuffer> q = BUFFERS.get();
     final DirectBuffer buffer = q.poll();
 
@@ -112,12 +112,12 @@ public final class DirectBufferProxy extends BufferProxy<DirectBuffer> {
   }
 
   @Override
-  protected int compare(final DirectBuffer o1, final DirectBuffer o2) {
+  public int compare(final DirectBuffer o1, final DirectBuffer o2) {
     return compareBuff(o1, o2);
   }
 
   @Override
-  protected void deallocate(final DirectBuffer buff) {
+  public void deallocate(final DirectBuffer buff) {
     final OneToOneConcurrentArrayQueue<DirectBuffer> q = BUFFERS.get();
     q.offer(buff);
   }
@@ -130,8 +130,8 @@ public final class DirectBufferProxy extends BufferProxy<DirectBuffer> {
   }
 
   @Override
-  protected void in(final DirectBuffer buffer, final Pointer ptr,
-                    final long ptrAddr) {
+  public void in(final DirectBuffer buffer, final Pointer ptr,
+                 final long ptrAddr) {
     final long addr = buffer.addressOffset();
     final long size = buffer.capacity();
     UNSAFE.putLong(ptrAddr + STRUCT_FIELD_OFFSET_DATA, addr);
@@ -147,8 +147,8 @@ public final class DirectBufferProxy extends BufferProxy<DirectBuffer> {
   }
 
   @Override
-  protected DirectBuffer out(final DirectBuffer buffer, final Pointer ptr,
-                             final long ptrAddr) {
+  public DirectBuffer out(final DirectBuffer buffer, final Pointer ptr,
+                          final long ptrAddr) {
     final long addr = UNSAFE.getLong(ptrAddr + STRUCT_FIELD_OFFSET_DATA);
     final long size = UNSAFE.getLong(ptrAddr + STRUCT_FIELD_OFFSET_SIZE);
     buffer.wrap(addr, (int) size);

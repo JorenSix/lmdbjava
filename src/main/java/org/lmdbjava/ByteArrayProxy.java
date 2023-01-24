@@ -74,17 +74,17 @@ public final class ByteArrayProxy extends BufferProxy<byte[]> {
   }
 
   @Override
-  protected byte[] allocate() {
+  public byte[] allocate() {
     return new byte[0];
   }
 
   @Override
-  protected int compare(final byte[] o1, final byte[] o2) {
+  public int compare(final byte[] o1, final byte[] o2) {
     return compareArrays(o1, o2);
   }
 
   @Override
-  protected void deallocate(final byte[] buff) {
+  public void deallocate(final byte[] buff) {
     // byte arrays cannot be allocated
   }
 
@@ -94,8 +94,8 @@ public final class ByteArrayProxy extends BufferProxy<byte[]> {
   }
 
   @Override
-  protected void in(final byte[] buffer, final Pointer ptr,
-                    final long ptrAddr) {
+  public void in(final byte[] buffer, final Pointer ptr,
+                 final long ptrAddr) {
     final Pointer pointer = MEM_MGR.allocateDirect(buffer.length);
     pointer.put(0, buffer, 0, buffer.length);
     ptr.putLong(STRUCT_FIELD_OFFSET_SIZE, buffer.length);
@@ -109,8 +109,8 @@ public final class ByteArrayProxy extends BufferProxy<byte[]> {
   }
 
   @Override
-  protected byte[] out(final byte[] buffer, final Pointer ptr,
-                       final long ptrAddr) {
+  public byte[] out(final byte[] buffer, final Pointer ptr,
+                    final long ptrAddr) {
     final long addr = ptr.getAddress(STRUCT_FIELD_OFFSET_DATA);
     final int size = (int) ptr.getLong(STRUCT_FIELD_OFFSET_SIZE);
     final Pointer pointer = MEM_MGR.newPointer(addr, size);

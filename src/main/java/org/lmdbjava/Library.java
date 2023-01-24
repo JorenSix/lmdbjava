@@ -53,7 +53,7 @@ import jnr.ffi.types.size_t;
  * <p>
  * For performance reasons pointers are used rather than structs.
  */
-final class Library {
+public final class Library {
 
   /**
    * Java system property name that can be set to disable automatic extraction
@@ -90,7 +90,7 @@ final class Library {
   static final String EXTRACT_DIR = getProperty(LMDB_EXTRACT_DIR_PROP,
                                                 getProperty("java.io.tmpdir"));
   static final Lmdb LIB;
-  static final jnr.ffi.Runtime RUNTIME;
+  public static final jnr.ffi.Runtime RUNTIME;
   /**
    * Indicates whether external LMDB system library is provided.
    */
@@ -170,7 +170,7 @@ final class Library {
     public final u_int32_t f4_me_maxreaders;
     public final u_int32_t f5_me_numreaders;
 
-    MDB_envinfo(final jnr.ffi.Runtime runtime) {
+    public MDB_envinfo(final jnr.ffi.Runtime runtime) {
       super(runtime);
       this.f0_me_mapaddr = new Pointer();
       this.f1_me_mapsize = new size_t();

@@ -483,7 +483,7 @@ public final class Dbi<T> {
     static final int MDB_BAD_DBI = -30_780;
     private static final long serialVersionUID = 1L;
 
-    BadDbiException() {
+    public BadDbiException() {
       super(MDB_BAD_DBI, "The specified DBI was changed unexpectedly");
     }
   }
@@ -496,7 +496,7 @@ public final class Dbi<T> {
     static final int MDB_BAD_VALSIZE = -30_781;
     private static final long serialVersionUID = 1L;
 
-    BadValueSizeException() {
+    public BadValueSizeException() {
       super(MDB_BAD_VALSIZE,
             "Unsupported size of key/DB name/data, or wrong DUPFIXED size");
     }
@@ -510,7 +510,7 @@ public final class Dbi<T> {
     static final int MDB_DBS_FULL = -30_791;
     private static final long serialVersionUID = 1L;
 
-    DbFullException() {
+    public DbFullException() {
       super(MDB_DBS_FULL, "Environment maxdbs reached");
     }
   }
@@ -533,7 +533,7 @@ public final class Dbi<T> {
     static final int MDB_INCOMPATIBLE = -30_784;
     private static final long serialVersionUID = 1L;
 
-    IncompatibleException() {
+    public IncompatibleException() {
       super(MDB_INCOMPATIBLE,
             "Operation and DB incompatible, or DB type changed");
     }
@@ -547,7 +547,7 @@ public final class Dbi<T> {
     static final int MDB_KEYEXIST = -30_799;
     private static final long serialVersionUID = 1L;
 
-    KeyExistsException() {
+    public KeyExistsException() {
       super(MDB_KEYEXIST, "key/data pair already exists");
     }
   }
@@ -560,7 +560,7 @@ public final class Dbi<T> {
     static final int MDB_NOTFOUND = -30_798;
     private static final long serialVersionUID = 1L;
 
-    KeyNotFoundException() {
+    public KeyNotFoundException() {
       super(MDB_NOTFOUND, "key/data pair not found (EOF)");
     }
   }
@@ -573,7 +573,7 @@ public final class Dbi<T> {
     static final int MDB_MAP_RESIZED = -30_785;
     private static final long serialVersionUID = 1L;
 
-    MapResizedException() {
+    public MapResizedException() {
       super(MDB_MAP_RESIZED, "Database contents grew beyond environment mapsize");
     }
   }

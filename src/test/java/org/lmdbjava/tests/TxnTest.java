@@ -18,9 +18,8 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
-import static com.jakewharton.byteunits.BinaryByteUnit.KIBIBYTES;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,9 +33,6 @@ import static org.lmdbjava.Env.create;
 import static org.lmdbjava.EnvFlags.MDB_NOSUBDIR;
 import static org.lmdbjava.EnvFlags.MDB_RDONLY_ENV;
 import static org.lmdbjava.KeyRange.closed;
-import static org.lmdbjava.TestUtils.DB_1;
-import static org.lmdbjava.TestUtils.POSIX_MODE;
-import static org.lmdbjava.TestUtils.bb;
 import static org.lmdbjava.Txn.State.DONE;
 import static org.lmdbjava.Txn.State.READY;
 import static org.lmdbjava.Txn.State.RELEASED;
@@ -55,8 +51,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.lmdbjava.CursorIterable;
+import org.lmdbjava.Dbi;
 import org.lmdbjava.Dbi.BadValueSizeException;
+import org.lmdbjava.Env;
 import org.lmdbjava.Env.AlreadyClosedException;
+import org.lmdbjava.Txn;
 import org.lmdbjava.Txn.EnvIsReadOnly;
 import org.lmdbjava.Txn.IncompatibleParent;
 import org.lmdbjava.Txn.NotReadyException;
@@ -84,35 +84,35 @@ public final class TxnTest {
   public void before() throws IOException {
     path = tmp.newFile();
     env = create()
-        .setMapSize(KIBIBYTES.toBytes(100))
+        .setMapSize(400 * 1_024)
         .setMaxReaders(1)
         .setMaxDbs(2)
-        .open(path, POSIX_MODE, MDB_NOSUBDIR);
+        .open(path, TestUtils.POSIX_MODE, MDB_NOSUBDIR);
   }
 
   @Test(expected = BadValueSizeException.class)
   public void largeKeysRejected() throws IOException {
-    final Dbi<ByteBuffer> dbi = env.openDbi(DB_1, MDB_CREATE);
+    final Dbi<ByteBuffer> dbi = env.openDbi(TestUtils.DB_1, MDB_CREATE);
     final ByteBuffer key = allocateDirect(env.getMaxKeySize() + 1);
     key.limit(key.capacity());
-    dbi.put(key, bb(2));
+    dbi.put(key, TestUtils.bb(2));
   }
 
   @Test
   public void rangeSearch() {
-    final Dbi<ByteBuffer> db = env.openDbi(DB_1, MDB_CREATE);
+    final Dbi<ByteBuffer> db = env.openDbi(TestUtils.DB_1, MDB_CREATE);
 
     final ByteBuffer key = allocateDirect(env.getMaxKeySize());
     key.put("cherry".getBytes(UTF_8)).flip();
-    db.put(key, bb(1));
+    db.put(key, TestUtils.bb(1));
 
     key.clear();
     key.put("strawberry".getBytes(UTF_8)).flip();
-    db.put(key, bb(3));
+    db.put(key, TestUtils.bb(3));
 
     key.clear();
     key.put("pineapple".getBytes(UTF_8)).flip();
-    db.put(key, bb(2));
+    db.put(key, TestUtils.bb(2));
 
     try (Txn<ByteBuffer> txn = env.txnRead()) {
       final ByteBuffer start = allocateDirect(env.getMaxKeySize());
@@ -135,7 +135,7 @@ public final class TxnTest {
 
   @Test
   public void readOnlyTxnAllowedInReadOnlyEnv() {
-    env.openDbi(DB_1, MDB_CREATE);
+    env.openDbi(TestUtils.DB_1, MDB_CREATE);
     try (Env<ByteBuffer> roEnv = create()
         .setMaxReaders(1)
         .open(path, MDB_NOSUBDIR, MDB_RDONLY_ENV)) {
@@ -145,7 +145,7 @@ public final class TxnTest {
 
   @Test(expected = EnvIsReadOnly.class)
   public void readWriteTxnDeniedInReadOnlyEnv() {
-    env.openDbi(DB_1, MDB_CREATE);
+    env.openDbi(TestUtils.DB_1, MDB_CREATE);
     env.close();
     try (Env<ByteBuffer> roEnv = create()
         .setMaxReaders(1)
@@ -178,7 +178,7 @@ public final class TxnTest {
 
   @Test
   public void testGetId() {
-    final Dbi<ByteBuffer> db = env.openDbi(DB_1, MDB_CREATE);
+    final Dbi<ByteBuffer> db = env.openDbi(TestUtils.DB_1, MDB_CREATE);
 
     final AtomicLong txId1 = new AtomicLong();
     final AtomicLong txId2 = new AtomicLong();
@@ -187,7 +187,7 @@ public final class TxnTest {
       txId1.set(tx1.getId());
     }
 
-    db.put(bb(1), bb(2));
+    db.put(TestUtils.bb(1), TestUtils.bb(2));
 
     try (Txn<ByteBuffer> tx2 = env.txnRead()) {
       txId2.set(tx2.getId());
@@ -312,11 +312,11 @@ public final class TxnTest {
 
   @Test(expected = BadValueSizeException.class)
   public void zeroByteKeysRejected() throws IOException {
-    final Dbi<ByteBuffer> dbi = env.openDbi(DB_1, MDB_CREATE);
+    final Dbi<ByteBuffer> dbi = env.openDbi(TestUtils.DB_1, MDB_CREATE);
     final ByteBuffer key = allocateDirect(4);
     key.putInt(1);
     assertThat(key.remaining(), is(0)); // because key.flip() skipped
-    dbi.put(key, bb(2));
+    dbi.put(key, TestUtils.bb(2));
   }
 
 }

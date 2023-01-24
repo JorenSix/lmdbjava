@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.fail;
 import static org.lmdbjava.Cursor.FullException.MDB_CURSOR_FULL;
 import static org.lmdbjava.ResultCodeMapper.checkRc;
-import static org.lmdbjava.TestUtils.invokePrivateConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,12 +46,15 @@ import org.lmdbjava.Env.FileInvalidException;
 import org.lmdbjava.Env.MapFullException;
 import org.lmdbjava.Env.ReadersFullException;
 import org.lmdbjava.Env.VersionMismatchException;
+import org.lmdbjava.LmdbException;
+import org.lmdbjava.LmdbNativeException;
 import org.lmdbjava.LmdbNativeException.ConstantDerivedException;
 import org.lmdbjava.LmdbNativeException.PageCorruptedException;
 import org.lmdbjava.LmdbNativeException.PageFullException;
 import org.lmdbjava.LmdbNativeException.PageNotFoundException;
 import org.lmdbjava.LmdbNativeException.PanicException;
 import org.lmdbjava.LmdbNativeException.TlsFullException;
+import org.lmdbjava.ResultCodeMapper;
 import org.lmdbjava.Txn.BadException;
 import org.lmdbjava.Txn.BadReaderLockException;
 import org.lmdbjava.Txn.TxFullException;
@@ -132,7 +134,7 @@ public final class ResultCodeMapperTest {
 
   @Test
   public void coverPrivateConstructors() {
-    invokePrivateConstructor(ResultCodeMapper.class);
+    TestUtils.invokePrivateConstructor(ResultCodeMapper.class);
   }
 
   @Test

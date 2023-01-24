@@ -94,7 +94,7 @@ public final class ByteBufProxy extends BufferProxy<ByteBuf> {
   }
 
   @Override
-  protected ByteBuf allocate() {
+  public ByteBuf allocate() {
     for (int i = 0; i < BUFFER_RETRIES; i++) {
       final ByteBuf bb = nettyAllocator.directBuffer();
       if (NAME.equals(bb.getClass().getName())) {
@@ -107,12 +107,12 @@ public final class ByteBufProxy extends BufferProxy<ByteBuf> {
   }
 
   @Override
-  protected int compare(final ByteBuf o1, final ByteBuf o2) {
+  public int compare(final ByteBuf o1, final ByteBuf o2) {
     return o1.compareTo(o2);
   }
 
   @Override
-  protected void deallocate(final ByteBuf buff) {
+  public void deallocate(final ByteBuf buff) {
     buff.release();
   }
 
@@ -124,7 +124,7 @@ public final class ByteBufProxy extends BufferProxy<ByteBuf> {
   }
 
   @Override
-  protected void in(final ByteBuf buffer, final Pointer ptr, final long ptrAddr) {
+  public void in(final ByteBuf buffer, final Pointer ptr, final long ptrAddr) {
     UNSAFE.putLong(ptrAddr + STRUCT_FIELD_OFFSET_SIZE,
                    buffer.writerIndex() - buffer.readerIndex());
     UNSAFE.putLong(ptrAddr + STRUCT_FIELD_OFFSET_DATA,
@@ -141,8 +141,8 @@ public final class ByteBufProxy extends BufferProxy<ByteBuf> {
   }
 
   @Override
-  protected ByteBuf out(final ByteBuf buffer, final Pointer ptr,
-                        final long ptrAddr) {
+  public ByteBuf out(final ByteBuf buffer, final Pointer ptr,
+                     final long ptrAddr) {
     final long addr = UNSAFE.getLong(ptrAddr + STRUCT_FIELD_OFFSET_DATA);
     final long size = UNSAFE.getLong(ptrAddr + STRUCT_FIELD_OFFSET_SIZE);
     UNSAFE.putLong(buffer, addressOffset, addr);

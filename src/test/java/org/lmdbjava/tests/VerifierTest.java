@@ -18,9 +18,8 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
-import static com.jakewharton.byteunits.BinaryByteUnit.MEBIBYTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.lmdbjava.Env.create;
@@ -34,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.lmdbjava.Env;
+import org.lmdbjava.Verifier;
 
 /**
  * Test {@link Verifier}.
@@ -49,7 +50,7 @@ public final class VerifierTest {
     try (Env<ByteBuffer> env = create()
         .setMaxReaders(1)
         .setMaxDbs(Verifier.DBI_COUNT)
-        .setMapSize(MEBIBYTES.toBytes(10))
+        .setMapSize(10 *1_024 * 1_024)
         .open(path, MDB_NOSUBDIR)) {
       final Verifier v = new Verifier(env);
       assertThat(v.runFor(2, TimeUnit.SECONDS), greaterThan(1L));

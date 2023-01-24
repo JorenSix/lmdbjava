@@ -21,4 +21,4 @@
 /**
  * Lightning Memory Database (LMDB) for Java (LmdbJava) tests.
  */
-package org.lmdbjava;
+package org.lmdbjava.tests;

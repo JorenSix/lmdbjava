@@ -454,7 +454,7 @@ public final class Env<T> implements AutoCloseable {
    */
   public static final class Builder<T> {
 
-    static final int MAX_READERS_DEFAULT = 126;
+    public static final int MAX_READERS_DEFAULT = 126;
     private long mapSize = 1_024 * 1_024;
     private int maxDbs = 1;
     private int maxReaders = MAX_READERS_DEFAULT;
@@ -566,7 +566,7 @@ public final class Env<T> implements AutoCloseable {
     static final int MDB_INVALID = -30_793;
     private static final long serialVersionUID = 1L;
 
-    FileInvalidException() {
+    public FileInvalidException() {
       super(MDB_INVALID, "File is not a valid LMDB file");
     }
   }
@@ -596,7 +596,7 @@ public final class Env<T> implements AutoCloseable {
     static final int MDB_MAP_FULL = -30_792;
     private static final long serialVersionUID = 1L;
 
-    MapFullException() {
+    public MapFullException() {
       super(MDB_MAP_FULL, "Environment mapsize reached");
     }
   }
@@ -609,7 +609,7 @@ public final class Env<T> implements AutoCloseable {
     static final int MDB_READERS_FULL = -30_790;
     private static final long serialVersionUID = 1L;
 
-    ReadersFullException() {
+    public ReadersFullException() {
       super(MDB_READERS_FULL, "Environment maxreaders reached");
     }
   }
@@ -622,7 +622,7 @@ public final class Env<T> implements AutoCloseable {
     static final int MDB_VERSION_MISMATCH = -30_794;
     private static final long serialVersionUID = 1L;
 
-    VersionMismatchException() {
+    public VersionMismatchException() {
       super(MDB_VERSION_MISMATCH, "Environment version mismatch");
     }
   }

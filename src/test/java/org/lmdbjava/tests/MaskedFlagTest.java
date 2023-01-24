@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,6 +30,8 @@ import static org.lmdbjava.MaskedFlag.isSet;
 import static org.lmdbjava.MaskedFlag.mask;
 
 import org.junit.Test;
+import org.lmdbjava.EnvFlags;
+import org.lmdbjava.MaskedFlag;
 
 /**
  * Test {@link MaskedFlag}.

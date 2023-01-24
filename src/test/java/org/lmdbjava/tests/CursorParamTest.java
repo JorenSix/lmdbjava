@@ -18,9 +18,8 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
-import static com.jakewharton.byteunits.BinaryByteUnit.KIBIBYTES;
 import static java.lang.Long.BYTES;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.CoreMatchers.is;
@@ -42,11 +41,6 @@ import static org.lmdbjava.SeekOp.MDB_FIRST;
 import static org.lmdbjava.SeekOp.MDB_LAST;
 import static org.lmdbjava.SeekOp.MDB_NEXT;
 import static org.lmdbjava.SeekOp.MDB_PREV;
-import static org.lmdbjava.TestUtils.DB_1;
-import static org.lmdbjava.TestUtils.POSIX_MODE;
-import static org.lmdbjava.TestUtils.bb;
-import static org.lmdbjava.TestUtils.mdb;
-import static org.lmdbjava.TestUtils.nb;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +49,8 @@ import java.nio.ByteBuffer;
 import io.netty.buffer.ByteBuf;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -62,6 +58,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.lmdbjava.*;
 
 /**
  * Test {@link Cursor} with different buffer implementations.
@@ -111,8 +108,8 @@ public final class CursorParamTest {
     public final void execute(final TemporaryFolder tmp) {
       try (Env<T> env = env(tmp)) {
         assertThat(env.getDbiNames(), empty());
-        final Dbi<T> db = env.openDbi(DB_1, MDB_CREATE, MDB_DUPSORT);
-        assertThat(env.getDbiNames().get(0), is(DB_1.getBytes(UTF_8)));
+        final Dbi<T> db = env.openDbi(TestUtils.DB_1, MDB_CREATE, MDB_DUPSORT);
+        MatcherAssert.assertThat(env.getDbiNames().get(0), CoreMatchers.is(TestUtils.DB_1.getBytes(UTF_8)));
         try (Txn<T> txn = env.txnWrite();
              Cursor<T> c = db.openCursor(txn)) {
           // populate data
@@ -184,10 +181,10 @@ public final class CursorParamTest {
       try {
         final File path = tmp.newFile();
         return create(proxy)
-            .setMapSize(KIBIBYTES.toBytes(1_024))
+            .setMapSize(1024 * 1_024)
             .setMaxReaders(1)
             .setMaxDbs(1)
-            .open(path, POSIX_MODE, MDB_NOSUBDIR);
+            .open(path, TestUtils.POSIX_MODE, MDB_NOSUBDIR);
       } catch (final IOException e) {
         throw new LmdbException("IO failure", e);
       }
@@ -247,7 +244,7 @@ public final class CursorParamTest {
 
     @Override
     public ByteBuffer set(final int val) {
-      return bb(val);
+      return TestUtils.bb(val);
     }
 
     @Override
@@ -273,7 +270,7 @@ public final class CursorParamTest {
 
     @Override
     public DirectBuffer set(final int val) {
-      return mdb(val);
+      return TestUtils.mdb(val);
     }
 
     @Override
@@ -299,7 +296,7 @@ public final class CursorParamTest {
 
     @Override
     public ByteBuf set(final int val) {
-      return nb(val);
+      return TestUtils.nb(val);
     }
 
     @Override

@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -26,9 +26,9 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.lmdbjava.LmdbNativeException.PageCorruptedException.MDB_CORRUPTED;
 import static org.lmdbjava.Meta.error;
-import static org.lmdbjava.TestUtils.invokePrivateConstructor;
 
 import org.junit.Test;
+import org.lmdbjava.Meta;
 import org.lmdbjava.Meta.Version;
 
 /**
@@ -38,7 +38,7 @@ public final class MetaTest {
 
   @Test
   public void coverPrivateConstructors() {
-    invokePrivateConstructor(Meta.class);
+    TestUtils.invokePrivateConstructor(Meta.class);
   }
 
   @Test

@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static java.lang.Integer.BYTES;
 import static java.nio.ByteBuffer.allocate;
@@ -37,8 +37,8 @@ import static org.lmdbjava.ByteBufferProxy.PROXY_SAFE;
 import static org.lmdbjava.DbiFlags.MDB_CREATE;
 import static org.lmdbjava.Env.create;
 import static org.lmdbjava.Library.RUNTIME;
-import static org.lmdbjava.TestUtils.DB_1;
-import static org.lmdbjava.TestUtils.invokePrivateConstructor;
+import static org.lmdbjava.tests.TestUtils.DB_1;
+import static org.lmdbjava.tests.TestUtils.invokePrivateConstructor;
 import static org.lmdbjava.UnsafeAccess.ALLOW_UNSAFE;
 
 import java.io.File;
@@ -51,6 +51,7 @@ import jnr.ffi.provider.MemoryManager;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.lmdbjava.*;
 import org.lmdbjava.ByteBufferProxy.BufferMustBeDirectException;
 import org.lmdbjava.Env.ReadersFullException;
 

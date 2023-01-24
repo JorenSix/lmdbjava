@@ -36,7 +36,7 @@ import org.lmdbjava.Txn.TxFullException;
  * maintains a table of them.
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")
-final class ResultCodeMapper {
+public final class ResultCodeMapper {
 
   /**
    * Successful result.
@@ -58,7 +58,7 @@ final class ResultCodeMapper {
    *
    * @param rc the LMDB result code
    */
-  static void checkRc(final int rc) {
+  public static void checkRc(final int rc) {
     switch (rc) {
       case MDB_SUCCESS:
         return;

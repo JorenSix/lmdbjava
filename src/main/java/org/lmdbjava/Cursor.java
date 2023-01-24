@@ -413,10 +413,10 @@ public final class Cursor<T> implements AutoCloseable {
    */
   public static final class FullException extends LmdbNativeException {
 
-    static final int MDB_CURSOR_FULL = -30_787;
+    public static final int MDB_CURSOR_FULL = -30_787;
     private static final long serialVersionUID = 1L;
 
-    FullException() {
+    public FullException() {
       super(MDB_CURSOR_FULL, "Cursor stack too deep - internal error");
     }
   }

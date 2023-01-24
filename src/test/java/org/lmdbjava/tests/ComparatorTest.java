@@ -18,7 +18,7 @@
  * #L%
  */
 
-package org.lmdbjava;
+package org.lmdbjava.tests;
 
 import static io.netty.buffer.PooledByteBufAllocator.DEFAULT;
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -26,10 +26,10 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.lmdbjava.ByteArrayProxy.PROXY_BA;
 import static org.lmdbjava.ByteBufferProxy.PROXY_OPTIMAL;
-import static org.lmdbjava.ComparatorTest.ComparatorResult.EQUAL_TO;
-import static org.lmdbjava.ComparatorTest.ComparatorResult.GREATER_THAN;
-import static org.lmdbjava.ComparatorTest.ComparatorResult.LESS_THAN;
-import static org.lmdbjava.ComparatorTest.ComparatorResult.get;
+import static org.lmdbjava.tests.ComparatorTest.ComparatorResult.EQUAL_TO;
+import static org.lmdbjava.tests.ComparatorTest.ComparatorResult.GREATER_THAN;
+import static org.lmdbjava.tests.ComparatorTest.ComparatorResult.LESS_THAN;
+import static org.lmdbjava.tests.ComparatorTest.ComparatorResult.get;
 import static org.lmdbjava.DirectBufferProxy.PROXY_DB;
 
 import java.nio.ByteBuffer;
@@ -41,11 +41,13 @@ import com.google.common.primitives.UnsignedBytes;
 import io.netty.buffer.ByteBuf;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.lmdbjava.*;
 
 /**
  * Tests comparator functions are consistent across buffers.
@@ -93,50 +95,50 @@ public final class ComparatorTest {
 
   @Test
   public void atLeastOneBufferHasEightBytes() {
-    assertThat(get(comparator.compare(HLLLLLLL, LLLLLLLL)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(LLLLLLLL, HLLLLLLL)), is(LESS_THAN));
+    assertThat(get(comparator.compare(HLLLLLLL, LLLLLLLL)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(LLLLLLLL, HLLLLLLL)), Is.is(LESS_THAN));
 
-    assertThat(get(comparator.compare(LHLLLLLL, LLLLLLLL)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(LLLLLLLL, LHLLLLLL)), is(LESS_THAN));
+    assertThat(get(comparator.compare(LHLLLLLL, LLLLLLLL)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(LLLLLLLL, LHLLLLLL)), Is.is(LESS_THAN));
 
-    assertThat(get(comparator.compare(LLLLLLLL, LLLLLLLX)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(LLLLLLLX, LLLLLLLL)), is(LESS_THAN));
+    assertThat(get(comparator.compare(LLLLLLLL, LLLLLLLX)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(LLLLLLLX, LLLLLLLL)), Is.is(LESS_THAN));
 
-    assertThat(get(comparator.compare(HLLLLLLL, HLLLLLLX)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(HLLLLLLX, HLLLLLLL)), is(LESS_THAN));
+    assertThat(get(comparator.compare(HLLLLLLL, HLLLLLLX)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(HLLLLLLX, HLLLLLLL)), Is.is(LESS_THAN));
 
-    assertThat(get(comparator.compare(HLLLLLLX, LHLLLLLL)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(LHLLLLLL, HLLLLLLX)), is(LESS_THAN));
+    assertThat(get(comparator.compare(HLLLLLLX, LHLLLLLL)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(LHLLLLLL, HLLLLLLX)), Is.is(LESS_THAN));
   }
 
   @Test
   public void buffersOfTwoBytes() {
-    assertThat(get(comparator.compare(LL, XX)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(XX, LL)), is(LESS_THAN));
+    assertThat(get(comparator.compare(LL, XX)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(XX, LL)), Is.is(LESS_THAN));
 
-    assertThat(get(comparator.compare(LL, LX)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(LX, LL)), is(LESS_THAN));
+    assertThat(get(comparator.compare(LL, LX)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(LX, LL)), Is.is(LESS_THAN));
 
-    assertThat(get(comparator.compare(LH, LX)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(LX, HL)), is(LESS_THAN));
+    assertThat(get(comparator.compare(LH, LX)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(LX, HL)), Is.is(LESS_THAN));
 
-    assertThat(get(comparator.compare(HX, LL)), is(GREATER_THAN));
-    assertThat(get(comparator.compare(LH, HX)), is(LESS_THAN));
+    assertThat(get(comparator.compare(HX, LL)), Is.is(GREATER_THAN));
+    assertThat(get(comparator.compare(LH, HX)), Is.is(LESS_THAN));
   }
 
   @Test
   public void equalBuffers() {
-    assertThat(get(comparator.compare(LL, LL)), is(EQUAL_TO));
-    assertThat(get(comparator.compare(HX, HX)), is(EQUAL_TO));
-    assertThat(get(comparator.compare(LH, LH)), is(EQUAL_TO));
-    assertThat(get(comparator.compare(LL, LL)), is(EQUAL_TO));
-    assertThat(get(comparator.compare(LX, LX)), is(EQUAL_TO));
+    assertThat(get(comparator.compare(LL, LL)), Is.is(EQUAL_TO));
+    assertThat(get(comparator.compare(HX, HX)), Is.is(EQUAL_TO));
+    assertThat(get(comparator.compare(LH, LH)), Is.is(EQUAL_TO));
+    assertThat(get(comparator.compare(LL, LL)), Is.is(EQUAL_TO));
+    assertThat(get(comparator.compare(LX, LX)), Is.is(EQUAL_TO));
 
-    assertThat(get(comparator.compare(HLLLLLLL, HLLLLLLL)), is(EQUAL_TO));
-    assertThat(get(comparator.compare(HLLLLLLX, HLLLLLLX)), is(EQUAL_TO));
-    assertThat(get(comparator.compare(LHLLLLLL, LHLLLLLL)), is(EQUAL_TO));
-    assertThat(get(comparator.compare(LLLLLLLL, LLLLLLLL)), is(EQUAL_TO));
-    assertThat(get(comparator.compare(LLLLLLLX, LLLLLLLX)), is(EQUAL_TO));
+    assertThat(get(comparator.compare(HLLLLLLL, HLLLLLLL)), Is.is(EQUAL_TO));
+    assertThat(get(comparator.compare(HLLLLLLX, HLLLLLLX)), Is.is(EQUAL_TO));
+    assertThat(get(comparator.compare(LHLLLLLL, LHLLLLLL)), Is.is(EQUAL_TO));
+    assertThat(get(comparator.compare(LLLLLLLL, LLLLLLLL)), Is.is(EQUAL_TO));
+    assertThat(get(comparator.compare(LLLLLLLX, LLLLLLLX)), Is.is(EQUAL_TO));
   }
 
   /**
